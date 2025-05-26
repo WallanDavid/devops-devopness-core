@@ -1,45 +1,118 @@
-[![MIT License](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/devopness/devopness/blob/main/LICENSE)
+[![MIT License](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](LICENSE)
+[![Docker Hub](https://img.shields.io/docker/pulls/bobwallan/empacotador-api?style=flat-square)](https://hub.docker.com/r/bobwallan/empacotador-api)
+[![Java](https://img.shields.io/badge/built%20with-Java%2017-blue?style=flat-square)](https://openjdk.org/projects/jdk/17/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.0-brightgreen?style=flat-square)](https://spring.io/projects/spring-boot)
 
-# Devopness - Official open-source repository
+# 📦 Empacotador API – Otimizador de Pedidos em Caixas
 
-## About Devopness
-`Devopness` aims to drastically simplify the way we manage cloud applications and multi cloud infrastructure in a secure and productive way.
+API REST desenvolvida em **Java com Spring Boot**, que empacota pedidos de produtos em caixas disponíveis da forma mais otimizada possível. Containerizada com Docker e segura com autenticação via JWT.
 
-By streamlining essential DevOps practices, we're making first-class software deployment and cloud infrastructure management tools accessible and affordable to everyone in the world who is involved in software projects.
-## 📚 <a id="docs"></a>Documentation
+---
 
+## 📚 Documentação
 
-Product documentation is maintained in the [docs](docs/) folder.
+A documentação completa está neste README. Futuramente, poderá ser migrada para uma wiki ou pasta `docs/`.
 
-## 🙋 <a id="issues"></a>Issues
+---
 
-See the [issue backlog](https://github.com/devopness/devopness/issues) for a list of active or proposed tasks. Feel free to create new issues, report bugs, and send feature requests.
+## 🚀 Como Executar Localmente com Docker
 
-## ✍️ <a id="contributing"></a>Contributing
+### ✅ Requisitos
+- Docker instalado
+- Porta `8080` livre
 
-Improvements and contributions are highly encouraged! 🙏👊
+### ▶️ Passo a Passo
 
-See the [contributing guide](CONTRIBUTING.md) for details on how to participate.
+1. Build da imagem:
+   docker build -t bobwallan/empacotador-api:1.0 .
 
-All communication and contributions to Devopness projects are subject to the [Devopness Code of Conduct](CODE_OF_CONDUCT.md).
+2. Execute a aplicação:
+   docker run -p 8080:8080 bobwallan/empacotador-api:1.0
 
-Not yet ready to contribute but do like the project? Support Devopness with a ⭐!
+3. Acesse a API:
+   http://localhost:8080
 
-## 💼 <a id="changelog"></a>Changelog
+---
 
-Detailed changes for each release are documented in the [release notes](https://github.com/devopness/devopness/releases).
+## 🔐 Autenticação JWT
 
-## 📂 <a id="repo"></a>Repo Structure
+1. Faça login:
+POST /auth/login
+Content-Type: application/json
 
-This repository has the following packages/sub-projects:
-### Packages
-| Subpath                    | Package                   | Description                     |Status|
-|:---------------------------|:--------------------------|:--------------------------------|-|
-| [/docs](docs/)             | 📚 Documentation          | End user product documentation  |-|
-| [/packages/sdks/javascript](packages/sdks/javascript/) | API SDK JavaScript  | API SDK to interact with Devopness using JavaScript and TypeScript |[![SDK JavaScript - CI](https://img.shields.io/github/actions/workflow/status/devopness/devopness/ci-sdk-javascript.yml?label=SDK%20JavaScript)](https://github.com/devopness/devopness/actions/workflows/ci-sdk-javascript.yml)<br>[![SDK JavaScript - Version](https://img.shields.io/npm/v/@devopness/sdk-js?label=SDK%20JavaScript)](https://www.npmjs.com/package/@devopness/sdk-js)|
-| [/packages/sdks/python](packages/sdks/python/) | API SDK Python  | API SDK to interact with Devopness using Python |[![SDK Python - CI](https://img.shields.io/github/actions/workflow/status/devopness/devopness/ci-sdk-python.yml?label=SDK%20Python)](https://github.com/devopness/devopness/actions/workflows/ci-sdk-python.yml)<br>[![SDK Python - Version](https://img.shields.io/pypi/v/devopness?label=SDK%20Python)](https://pypi.org/project/devopness/)|
-| [/packages/ui/react](packages/ui/react/) | UI React Components  | Devopness Design System UI components for React |[![UI React - CI](https://img.shields.io/github/actions/workflow/status/devopness/devopness/ci-ui-react.yml?label=UI%20React)](https://github.com/devopness/devopness/actions/workflows/ci-ui-react.yml)<br>[![UI React - Version](https://img.shields.io/npm/v/@devopness/ui-react?label=UI%20React)](https://www.npmjs.com/package/@devopness/ui-react)|
+{
+  "username": "admin",
+  "password": "senha123"
+}
 
-## 📜 <a id="license"></a>License
+2. No retorno, você receberá um token JWT.
 
-All repository contents are licensed under the terms of the [MIT License](LICENSE) unless otherwise specified in the `LICENSE` file at each package's root.
+3. Para acessar endpoints protegidos:
+Authorization: Bearer <seu-token-aqui>
+
+---
+
+## 📦 Endpoint Principal
+
+POST /api/pedidos
+
+Recebe uma lista de produtos em um pedido e retorna a alocação otimizada nas caixas.
+
+Exemplo de requisição:
+[
+  {
+    "id": "pedido1",
+    "produtos": [
+      {"id": "produto1", "altura": 10, "largura": 20, "comprimento": 15},
+      {"id": "produto2", "altura": 5, "largura": 10, "comprimento": 8}
+    ]
+  }
+]
+
+Exemplo de resposta:
+[
+  {
+    "id": "pedido1",
+    "caixas": [
+      {
+        "caixa": "Caixa 1",
+        "produtos": ["produto1", "produto2"]
+      }
+    ]
+  }
+]
+
+---
+
+## 🔁 Atualização do Projeto
+
+Sempre que fizer alterações no código:
+
+1. Compile com Maven:
+   mvn clean package
+
+2. Gere uma nova imagem:
+   docker build -t bobwallan/empacotador-api:<versao> .
+
+3. Envie para o Docker Hub:
+   docker push bobwallan/empacotador-api:<versao>
+
+---
+
+## 🙋 Contribuindo
+
+Contribuições são muito bem-vindas! Sinta-se à vontade para abrir issues, propor melhorias ou enviar PRs.
+
+---
+
+## 💼 Histórico de Versões
+
+As alterações são listadas na seção de releases do repositório.
+
+---
+
+## 📫 Contato
+
+Desenvolvedor: Wallan Peixoto  
+Email: bobwallan2@gmail.com  
+WhatsApp: (27) 99256-7995
